@@ -1,0 +1,12 @@
+$icon-font-path: '../../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import 'https://fonts.googleapis.com/css?family=Raleway';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  font-family: 'Raleway', sans-serif;
+}
+
+img {
+  max-width: 100%;
+}
