@@ -10,3 +10,22 @@ $icon-font-path: '../../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
 img {
   max-width: 100%;
 }
+
+header {
+  height: 60px;
+  background-color: blue;
+  color: #FFFFFF;
+
+  .add-image {
+    padding: 10px;
+    display: inline-block;
+    color: #FFF;
+    text-decoration: none;
+    border-radius: 50%;
+    background-color: #333;
+  }
+}
+
+i {
+  padding: 20px;
+}
