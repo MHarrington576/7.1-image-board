@@ -3,26 +3,26 @@ var React = require('react');
 var FormComponent = React.createClass({
   getInitialState: function(){
     return {
-      url: '',
-      caption: ''
-    }
+      url: this.props.model.get('url'),
+      caption: this.props.model.get('caption')
+    };
   },
-
   handleUrlChange: function(e){
     var urlInputValue = e.target.value;
     this.setState({url: urlInputValue});
   },
-
   handleCaptionChange: function(e){
-    var captionValue = e.target.text;
+    var captionValue = e.target.value;
     this.setState({caption: captionValue});
   },
-
   handleSubmit: function(e){
     e.preventDefault();
-    this.props.collection.create(this.state);
-  },
+    var newImage = {url: this.state.url, caption: this.state.caption};
 
+    this.props.addImage(newImage);
+
+    this.setState({url: '', caption: ''});
+  },
   render: function(){
     return (
       <form onSubmit={this.handleSubmit} className="well" action="index.html" method="post">
@@ -32,7 +32,7 @@ var FormComponent = React.createClass({
         </div>
         <div className="form-group">
           <label htmlFor="caption">Image Caption</label>
-          <textarea onChange={this.handleCaptionChange} className="form-control" id="caption" value={this.state.caption} rows="3"></textarea>
+          <textarea onChange={this.handleCaptionChange} className="form-control" id="caption" value={this.state.caption} rows="3" />
         </div>
         <button type="submit" className="btn btn-default">Add Image</button>
       </form>
