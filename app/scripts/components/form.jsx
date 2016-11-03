@@ -3,9 +3,17 @@ var React = require('react');
 var FormComponent = React.createClass({
   getInitialState: function(){
     return {
-      url: this.props.model.get('url'),
-      caption: this.props.model.get('caption')
+      url: '',
+      caption: ''
     };
+  },
+  componentWillReceiveProps: function(nextProps){
+    if(nextProps.model){
+      this.setState({
+        url: nextProps.model.get('url'),
+        caption: nextProps.model.get('caption')
+      });
+    }
   },
   handleUrlChange: function(e){
     var urlInputValue = e.target.value;
@@ -17,9 +25,13 @@ var FormComponent = React.createClass({
   },
   handleSubmit: function(e){
     e.preventDefault();
-    var newImage = {url: this.state.url, caption: this.state.caption};
+    var imageData = {url: this.state.url, caption: this.state.caption};
 
-    this.props.addImage(newImage);
+    if(this.props.model){
+      this.props.editImage(this.props.model, imageData);
+    }else{
+      this.props.addImage(imageData);
+    }
 
     this.setState({url: '', caption: ''});
   },
@@ -34,12 +46,13 @@ var FormComponent = React.createClass({
           <label htmlFor="caption">Image Caption</label>
           <textarea onChange={this.handleCaptionChange} className="form-control" id="caption" value={this.state.caption} rows="3" />
         </div>
-        <button type="submit" className="btn btn-default">Add Image</button>
+        <button type="submit" className="btn btn-default">{this.props.model ? 'Edit' : 'Add'} Image</button>
       </form>
     );
   }
 });
 
+
 module.exports = {
   FormComponent: FormComponent
-}
+};

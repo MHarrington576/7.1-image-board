@@ -2,32 +2,34 @@
 var React = require('react');
 
 // Local imports
-var ImageBoardCollection = require('../models/images.js').ImageCollection;
+var ImageCollection = require('../models/images.js').ImageCollection;
+var Image = require('../models/images.js').Image;
 var FormComponent = require('./form.jsx').FormComponent;
 var ListingComponent = require('./listing.jsx').ListingComponent;
+
 
 var AppComponent = React.createClass({
   getInitialState: function(){
     var self = this;
     var imageBoard = new ImageCollection();
-    var imageModel = new Image();
 
     imageBoard.fetch().then(function(){
       self.setState({collection: imageBoard});
     });
 
     return {
-      imageToEdit: imageModel,
+      imageToEdit: false,
       collection: imageBoard,
       showForm: false
     };
-    // Fetch the data from the sevrer and, when you're done, take that react
-    // component and call setState and set a collection to the image board.
   },
   addImage: function(imageModel){
     this.state.collection.create(imageModel);
     this.setState({collection: this.state.collection});
     // this.forceUpdate();
+  },
+  handleEdit: function(model){
+    this.setState({showForm: true, imageToEdit: model});
   },
   handleToggleForm: function(e){
     e.preventDefault();
@@ -35,8 +37,11 @@ var AppComponent = React.createClass({
     var showForm = !this.state.showForm;
     this.setState({showForm: showForm});
   },
-  editImage: function(image){
-    this.setState({imageToEdit: image});
+  editImage: function(model, data){
+    model.set(data);
+    model.save();
+
+    this.setState({imageToEdit: false, showForm: false});
   },
   render: function(){
     var self = this;
@@ -46,7 +51,7 @@ var AppComponent = React.createClass({
         <ListingComponent
           key={image.get("_id")}
           model={image}
-          editImage={self.editImage}
+          handleEdit={self.handleEdit}
         />
       );
     });
@@ -54,13 +59,14 @@ var AppComponent = React.createClass({
     return (
       <div>
         <header className="container-fluid main-header">
-          <a className="add-image" href="#" onClick={this.handleToggleForm}><i className="glyphicon glyphicon-plus"></i></a>
+          <h1>JavaScript Image Board</h1>
+          <a className="add-image" href="#" onClick={this.handleToggleForm}>Add Image</a>
         </header>
 
         <div className="container">
           <div className="row">
             <div className="col-md-12">
-              {this.state.showForm ? <FormComponent model={this.state.imageToEdit} addImage={this.addImage}/> : null}
+              {this.state.showForm ? <FormComponent model={this.state.imageToEdit} addImage={this.addImage} editImage={this.editImage}/> : null}
             </div>
           </div>
 
@@ -74,44 +80,6 @@ var AppComponent = React.createClass({
   }
 });
 
-
-
-
-    return {
-      collection: imageBoard,
-      testingState: 'Hey, this is cool!'
-    };
-  },
-  render: function(){
-    var imageList = this.state.collection.map(function(image){
-    //  return <ListingComponent key={image.} model={image} />
-    });
-
-    return (
-      <div>
-        <header className="container-fluid main-header">
-          <a className="add-image" href="#"><i className="glyphicon glyphicon-plus"></i></a>
-        </header>
-
-        <h1>{this.state.testingState}</h1>
-
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <FormComponent />
-            </div>
-          </div>
-
-          <div className="row">
-            <ListingComponent />
-          </div>
-
-        </div>
-      </div>
-    );
-  }
-});
-
 module.exports = {
   AppComponent: AppComponent
-}
+};
